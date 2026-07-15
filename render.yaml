@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://render.com/schema/render.yaml.json
 #
-# Dify on Render — one-click gallery template
+# Dify on Render: one-click gallery template
 # Repo: https://github.com/render-examples/dify-render-template
 # Upstream: https://github.com/langgenius/dify
 # Images: https://hub.docker.com/u/langgenius
@@ -15,7 +15,7 @@ projects:
     environments:
       - name: production
         services:
-          # ── API (Flask + Celery broker client) ─────────────────────────────
+          # API (Flask + Celery broker client)
           - type: web
             name: dify-api
             runtime: image
@@ -24,6 +24,7 @@ projects:
             image:
               url: docker.io/langgenius/dify-api:1.14.2
             healthCheckPath: /health
+            autoDeployTrigger: off
             initialDeployHook: psql $DATABASE_URL -c 'CREATE EXTENSION IF NOT EXISTS vector;'
             disk:
               name: dify-api-storage
@@ -138,7 +139,7 @@ projects:
               - key: OPENDAL_FS_ROOT
                 value: /app/api/storage
 
-          # ── Celery worker ─────────────────────────────────────────────────
+          # Celery worker
           - type: worker
             name: dify-worker
             runtime: image
@@ -146,6 +147,7 @@ projects:
             region: oregon
             image:
               url: docker.io/langgenius/dify-api:1.14.2
+            autoDeployTrigger: off
             envVars:
               - key: MODE
                 value: worker
@@ -224,7 +226,7 @@ projects:
               - key: OPENDAL_FS_ROOT
                 value: /app/api/storage
 
-          # ── Web console (Next.js) ───────────────────────────────────────────
+          # Web console (Next.js)
           - type: web
             name: dify-web
             runtime: image
@@ -232,6 +234,7 @@ projects:
             region: oregon
             image:
               url: docker.io/langgenius/dify-web:1.14.2
+            autoDeployTrigger: off
             envVars:
               - key: CONSOLE_API_URL
                 fromService:
@@ -244,7 +247,7 @@ projects:
                   type: web
                   envVarKey: RENDER_EXTERNAL_URL
 
-          # ── Key Value (Celery broker + cache) ───────────────────────────────
+          # Key Value (Celery broker + cache)
           - type: keyvalue
             name: dify-kv
             plan: starter
